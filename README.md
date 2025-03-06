@@ -163,7 +163,3 @@ A high-performance Layer 2 gaming protocol leveraging Bitcoin's security through
 **Resources**
 [Stacks Documentation](https://docs.stacks.co) |
 [Clarity Language Reference](https://clarity-lang.org/docs) |
-
-```
-
-```
