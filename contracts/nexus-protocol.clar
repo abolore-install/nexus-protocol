@@ -508,3 +508,49 @@
     (ok true)
   )
 )
+
+(define-private (is-valid-reward-candidate (player principal))
+  (match (map-get? leaderboard { player: player })
+    stats (and 
+            (> (get score stats) u0)
+            (is-valid-principal player)
+          )
+    false
+  )
+)
+
+(define-private (distribute-reward (player principal) (previous-result (response bool uint)))
+  (match (map-get? leaderboard { player: player })
+    player-stats 
+      (let 
+        (
+          (reward-amount (calculate-reward (get score player-stats)))
+        )
+        (if (and (is-ok previous-result) (> reward-amount u0))
+          (begin
+            (map-set leaderboard 
+              { player: player }
+              (merge player-stats 
+                { total-rewards: (+ (get total-rewards player-stats) reward-amount) }
+              )
+            )
+            (ok true)
+          )
+          previous-result
+        )
+      )
+    previous-result
+  )
+)
+
+(define-private (calculate-reward (score uint))
+  (if (and (> score u100) (<= score u10000))
+    (* score u10)
+    u0
+  )
+)
+
+;; Protocol Initialization
+
+;; Set contract deployer as initial admin
+(map-set protocol-admin-whitelist tx-sender true)
